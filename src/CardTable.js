@@ -1,49 +1,78 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Card from "./card";
 
 const CardTable = () => {
+  const [deck, setDeck] = useState(null);
   const [card, setCard] = useState("");
-let newActivity;
 
   useEffect(() => {
-    
-    
-     axios.get(
-        "https://www.boredapi.com/api/activity/"
-      ).then(res => console.log(res.data.activity));
-      //console.log(newActivity.data.activity);
-    setCard(newActivity.data.activity);
-    
-    //getActivity()
+    async function fetchDeck() {
+      try {
+        const res = await axios.get(
+          "https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
+        );
 
-   
+        setDeck(res.data.deck_id)
+
+  
+      } catch (err) {
+        console.log("error", err);
+      }
+
+
+    }
+
+
+    const cardFetch = axios.get(
+      `https://www.deckofcardsapi.com/api/deck/${deck}/draw/?count=1`
+    );
+    setCard(cardFetch.data)
+
+console.log(cardFetch.data)
+    fetchDeck()
+
+    
   }, []);
 
-  // async function getPlanet (){
-  //   return await axios.get("https://swapi.co/api/planets/1/")
-  // }
-  // getPlanet()
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     let deck = await axios.get('https://www.deckofcardsapi.com/api/deck/new/')
-  //     let oneCard = await axios.get(
-  //       "https://www.deckofcardsapi.com/api/deck/ibft3ikg7kuj/draw/?count=1"
-  //     );
-  //     //const tryMe = oneCard.data.cards[0].image
-  //     return oneCard;
-  //   }
-  //   setCard(fetchData());
-  // }, []);
 
-  return (
-    <div>
-      <div></div>
+//   useEffect(()=>{
+//     async function fetchCard () {
+//       const res = axios.get(
+//         `https://www.deckofcardsapi.com/api/deck/${deck.data.deck_id}/draw/?count=1`
+//       );
+// //setCard(res.data)
+// console.log(res.data)
+//     };
 
-      <h3>{card ? card : "loading..."}</h3>
-      <button  >gimme a card</button>
-    </div>
-  );
+//     fetchCard()
+//   },[])
+
+return(
+  <div>
+    <h4>{card}</h4>
+  </div>
+ )
 };
+
+// console.log("after card fetch");
+// console.log(deck, card);
+// const handleClick = () => {
+//   console.log("clicked");
+// };
+
+// return (
+//   <div>
+//     {/*<Card deck={deck} handleClick={handleClick} />*/}
+
+//     <div>
+//       <h3>{card ? card.code : "loading..."}</h3>
+//       <img src={card.image}></img>
+//       <button onClick={handleClick}>gimme</button>
+//     </div>
+//   </div>
+
+
 
 export default CardTable;
