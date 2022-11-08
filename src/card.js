@@ -1,29 +1,49 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const Card = ({ deck, handleClick }) => {
-  const [card, setCard] = useState("");
+const Card = ({ deck }) => {
+  const [activity, setActivity] = useState("");
+  const [card, setCard] = useState("card");
 
+const getCard = async()=> {
+const res = await axios.get(`https://www.deckofcardsapi.com/api/deck/${deck}/draw/?count=1`)
+setCard(res.data.cards[0])
+}
+
+  const getActivity = async () => {
+    const res = await axios.get("http://www.boredapi.com/api/activity/");
+    setActivity(res.data.activity)
+    
+  };
+  const actHandleClick = () => {
+    console.log("click")
+    getActivity()
+    
+  };
+
+const cardHandleClick=()=>{
+    getCard()
+}
 
   useEffect(() => {
-    async function fetchCard() {
-        console.log(deck)
-      const myCard = await axios.get(
-        `https://www.deckofcardsapi.com/api/deck/${deck.data.deck_id}/draw/?count=1`
-      );
-      setCard(myCard.data.cards[0]);
-    }
-
-    fetchCard();
+    getActivity();
+    getCard()
   }, []);
 
-  console.log('after card fetch')
+  const cardCode = card.code;
+  const cardImg = card.image;
+
+  console.log(activity);
 
   return (
     <div>
-      <h3>{card ? card.code : "loading..."}</h3>
-      <img src={card.image}></img>
-      <button onClick={handleClick}>gimme</button>
+      <h3>{activity ? activity : "loading..."}</h3>
+      <img src={card ? cardImg : 'image'}></img>
+      <h3>{card ? cardCode : 'loading card' }</h3>
+
+      <button onClick={actHandleClick}>new activity</button>
+
+      <button onClick={cardHandleClick}>new card</button>
     </div>
   );
 };
