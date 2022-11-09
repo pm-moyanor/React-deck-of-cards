@@ -1,59 +1,42 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Card from "./card";
+import Card from "./Card";
 
 const CardTable = () => {
-  const [deck, setDeck] = useState("deck");
- 
+  const [deck, setDeck] = useState(null);
 
-  const fetchDeck =async()=> {
-   
-      const deckRes =  await  axios
-      .get("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
-      setDeck(deckRes.data.deck_id)
- 
-
-    
-
- 
-  }
+  const getDeck = async () => {
+    try {
+      const deckRes = await axios.get(
+        "https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
+      );
+      return setDeck(deckRes.data);
+    } catch (e) {
+      console.log("rejected request", e);
+    }
+  };
 
   useEffect(() => {
-    try{
-      fetchDeck()
-    }catch(e){
-      console.log('rejected request',e)
-    }
-   
-   // axios
-   //   .get("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1") // useref this??
-   //   .then((response) => {
-   //     return axios.get(
-      //     `https://www.deckofcardsapi.com/api/deck/${response.data.deck_id}/draw/?count=1`
-      //   );
-      // })
-      // .then((response) => {
-      //   setCard(response.data.cards[0]);
-      // });
+    getDeck();
   }, []);
 
+  //const deckHandleClick = () => {
+  //   // how to pass new deck to card
+  //   getDeck();
 
-  console.log(deck)
-
-  // const cardCode = card.code;
-  // const cardImg = card.image;
-// put the click as a dependency in useeffect? evry time clicks useeffect rerenders
-//how to separate deck from card // review apis
-
+  // };
 
   return (
     <div className="game-container">
-     <Card deck={deck}  />
-     
-
-      <img className="card-img" ></img>
+      {/*<button onClick={deckHandleClick}>new deck</button>*/}
+      {deck ? <Card deck={deck} /> : "wait for it"}
     </div>
   );
 };
 
 export default CardTable;
+
+//catch error not working
+
+//1 runs Card.js without data fetched
+//2 runs useeffect() with getDeck in it, no data

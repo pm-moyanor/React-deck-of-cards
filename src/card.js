@@ -2,50 +2,60 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Card = ({ deck }) => {
-  const [activity, setActivity] = useState("");
-  const [card, setCard] = useState("card");
 
-const getCard = async()=> {
-const res = await axios.get(`https://www.deckofcardsapi.com/api/deck/${deck}/draw/?count=1`)
-setCard(res.data.cards[0])
-}
+  const [card, setCard] = useState("");
 
-  const getActivity = async () => {
-    const res = await axios.get("http://www.boredapi.com/api/activity/");
-    setActivity(res.data.activity)
-    
+
+
+  const getCard = async () => {
+    const res = await axios.get(
+      `https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=1`
+    );
+    setCard(res.data);
+ 
+   
+
   };
-  const actHandleClick = () => {
-    console.log("click")
-    getActivity()
-    
-  };
-
-const cardHandleClick=()=>{
-    getCard()
-}
 
   useEffect(() => {
-    getActivity();
-    getCard()
+    getCard();
+  
   }, []);
 
-  const cardCode = card.code;
-  const cardImg = card.image;
+  
+  const cardHandleClick = () => {
+    
+    getCard();
 
-  console.log(activity);
+    
+  };
+
+  //  const keepDrawing = () => {
+  //     setInterval(()=>{
+  //     getCard()
+  //     },1000)
+  //   }
+
+  //   useEffect(() => {
+  //     keepDrawing();
+  //   }, []);
+
+// const cardCode = card.cards[0].code;
+ const cardImg = card.cards[0].image;
+ const cardRem = card.remaining
+ console.log(cardRem);
 
   return (
-    <div>
-      <h3>{activity ? activity : "loading..."}</h3>
-      <img src={card ? cardImg : 'image'}></img>
-      <h3>{card ? cardCode : 'loading card' }</h3>
-
-      <button onClick={actHandleClick}>new activity</button>
+    <div className="card-box">
+        {cardRem > 0 ?  <img src={cardImg}></img> : alert('no more cards in deck')}
 
       <button onClick={cardHandleClick}>new card</button>
+      <button>keep'em coming</button>
     </div>
   );
 };
 
 export default Card;
+
+// good practice React?
+//first fetch throws error, onclick (requests a card frim a deck-id )works
