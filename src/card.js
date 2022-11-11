@@ -2,60 +2,66 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Card = ({ deck }) => {
-
-  const [card, setCard] = useState("");
-
-
+  const [card, setCard] = useState(null);
+  const [draw, setDraw] = useState(false);
+  const [intervalId, setIntervalId] = useState(false);
+  const cardAPI = `https://www.deckofcardsapi.com/api/deck/${deck}/draw/?count=1`;
 
   const getCard = async () => {
-    const res = await axios.get(
-      `https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=1`
-    );
+    const res = await axios.get(cardAPI);
     setCard(res.data);
- 
-   
+  };
 
+  const toggleDraw = () => {
+    setDraw(!draw);
   };
 
   useEffect(() => {
     getCard();
-  
-  }, []);
+  }, [draw]);
 
-  
   const cardHandleClick = () => {
-    
     getCard();
-
-    
+    console.log(card)
   };
 
-  //  const keepDrawing = () => {
-  //     setInterval(()=>{
-  //     getCard()
-  //     },1000)
-  //   }
 
-  //   useEffect(() => {
-  //     keepDrawing();
-  //   }, []);
+  const handleClick = () => {
+    if(intervalId) {
+      clearInterval(intervalId);
+      setIntervalId();
+      return;
+    }
+  
+    const newIntervalId = setInterval(() => {
+    getCard()
+    }, 500);
+    setIntervalId(newIntervalId);
+  }
 
-// const cardCode = card.cards[0].code;
- const cardImg = card.cards[0].image;
- const cardRem = card.remaining
- console.log(cardRem);
+const resetGame = () =>{
+    alert("no more cards in deck")
+}
 
+const check=()=>{
+    if(card){
+        console.log(card)
+     if ( card.remaining > 0 ) {
+        handleClick() 
+    }else{resetGame()} 
+    
+    }
+   return
+}
   return (
     <div className="card-box">
-        {cardRem > 0 ?  <img src={cardImg}></img> : alert('no more cards in deck')}
+      {card ? <img src={card.cards[0].image}></img> : undefined}
 
       <button onClick={cardHandleClick}>new card</button>
-      <button>keep'em coming</button>
+      <button onClick={check}>{ !intervalId ? "keep'em coming" : "stop"}</button>
     </div>
   );
 };
-
+//fix end function // make restart and new deck logic
+//  card.remaining > 0 ?  :  alert("no more cards in deck")
 export default Card;
-
-// good practice React?
-//first fetch throws error, onclick (requests a card frim a deck-id )works
