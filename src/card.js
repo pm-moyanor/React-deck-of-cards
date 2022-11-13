@@ -16,52 +16,54 @@ const Card = ({ deck }) => {
     setDraw(!draw);
   };
 
-  useEffect(() => {
-    getCard();
-  }, [draw]);
+  //   useEffect(() => {
+  //     getCard();
+  //   }, [draw]);
 
   const cardHandleClick = () => {
     getCard();
-    console.log(card)
   };
 
-
   const handleClick = () => {
-    if(intervalId) {
+    if (intervalId) {
       clearInterval(intervalId);
       setIntervalId();
       return;
     }
-  
+
     const newIntervalId = setInterval(() => {
-    getCard()
+      getCard();
     }, 500);
     setIntervalId(newIntervalId);
-  }
+  };
 
-const resetGame = () =>{
-    alert("no more cards in deck")
-}
+  const resetGame = () => {};
 
-const check=()=>{
-    if(card){
-        console.log(card)
-     if ( card.remaining > 0 ) {
-        handleClick() 
-    }else{resetGame()} 
-    
-    }
-   return
-}
+  //   const check = () => {
+  //     if (card.remaining > 0) {
+  //         console.log(card.remaining)
+  //         handleClick()
+
+  //     } else {
+  //         alert("no more cards in deck");
+  //     }
+  //  };
+
   return (
     <div className="card-box">
-      {card ? <img src={card.cards[0].image}></img> : undefined}
+      {card ? (
+        <img src={card.cards[0].image} style={{ height: "300px" }}></img>
+      ) : (
+        <img src="./cardback01.png" style={{ height: "300px" }}></img>
+      )}
 
       <button onClick={cardHandleClick}>new card</button>
-      <button onClick={check}>{ !intervalId ? "keep'em coming" : "stop"}</button>
+      <button onClick={handleClick}>
+        {!intervalId ? "keep'em coming" : "stop"}
+      </button>
     </div>
   );
 };
 //fix end function // make restart and new deck logic
-//  card.remaining > 0 ?  :  alert("no more cards in deck")
+
 export default Card;
