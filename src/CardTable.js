@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "./Card";
+import Check from "./Check";
 
 const CardTable = () => {
   const [deck, setDeck] = useState(null);
@@ -8,25 +9,22 @@ const CardTable = () => {
   const deckAPI =
     "https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1";
 
-  useEffect(() => {
-    const getDeckData = async () => {
-      let res = await axios.get(deckAPI);
-      setDeck(res.data.deck_id);
-    };
+  const getDeckData = async () => {
+    let res = await axios.get(deckAPI);
+    setDeck(res.data);
+ 
+  };
 
+  useEffect(() => {
     getDeckData();
   }, []);
 
-  //const deckHandleClick = () => {
-  //   // how to pass new deck to card
-  //   getDeck();
 
-  // };
 
   return (
     <div className="game-container">
       {/*<button onClick={deckHandleClick}>new deck</button>*/}
-      {deck ? <Card deck={deck} /> : undefined}
+      {deck ? <Card deck={deck} getDeckData={getDeckData} /> : undefined}
     </div>
   );
 };

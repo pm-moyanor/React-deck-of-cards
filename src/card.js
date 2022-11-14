@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Check from "./Check";
 
-const Card = ({ deck }) => {
-  const [card, setCard] = useState(null);
+const Card = ({ deck, getDeckData }) => {
+  const [card, setCard] = useState("start");
   const [draw, setDraw] = useState(false);
   const [intervalId, setIntervalId] = useState(false);
-  const cardAPI = `https://www.deckofcardsapi.com/api/deck/${deck}/draw/?count=1`;
+  const cardAPI = `https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=1`;
 
   const getCard = async () => {
     const res = await axios.get(cardAPI);
     setCard(res.data);
+ 
   };
 
-  const toggleDraw = () => {
-    setDraw(!draw);
+//   const toggleDraw = () => {
+//     setDraw(!draw);
+//   };
+const newGame = () => {
+    getDeckData();
+  console.log(deck.deck_id,card)
+    setCard('start')
   };
 
   //   useEffect(() => {
@@ -33,37 +40,24 @@ const Card = ({ deck }) => {
 
     const newIntervalId = setInterval(() => {
       getCard();
-    }, 500);
+    }, 200);
     setIntervalId(newIntervalId);
   };
-
-  const resetGame = () => {};
-
-  //   const check = () => {
-  //     if (card.remaining > 0) {
-  //         console.log(card.remaining)
-  //         handleClick()
-
-  //     } else {
-  //         alert("no more cards in deck");
-  //     }
-  //  };
-
+console.log(card.remaining)
   return (
     <div className="card-box">
-      {card ? (
-        <img src={card.cards[0].image} style={{ height: "300px" }}></img>
-      ) : (
-        <img src="./cardback01.png" style={{ height: "300px" }}></img>
-      )}
+     < Check card={card} newGame={newGame} setCard={setCard}/>
 
       <button onClick={cardHandleClick}>new card</button>
       <button onClick={handleClick}>
         {!intervalId ? "keep'em coming" : "stop"}
       </button>
+      <button onClick={newGame}>new game</button>
     </div>
   );
 };
 //fix end function // make restart and new deck logic
 
+//
+//)}
 export default Card;
